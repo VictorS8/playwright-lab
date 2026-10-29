@@ -1,23 +1,23 @@
 import { test, expect } from '@playwright/test';
 
 test('abre o TodoMVC e checa o título', async ({ page }) => {
-    await page.goto('/todomvc');
+  await page.goto('/todomvc');
 
-    await expect(page).toHaveTitle(/TodoMVC/);
+  await expect(page).toHaveTitle(/TodoMVC/);
 });
 
 test('a string exata não aceita só um trecho do título', async ({ page }) => {
-    await page.goto('/todomvc');
+  await page.goto('/todomvc');
 
-    await expect(page).not.toHaveTitle('TodoMVC');
+  await expect(page).not.toHaveTitle('TodoMVC');
 });
 
-// Com toHaveTitle('TodoMVC') o teste não passava, 
+// Com toHaveTitle('TodoMVC') o teste não passava,
 // pois o título é 'React • TodoMVC'.
 // Por isso aqui uso .not, pois a string exige o título inteiro.
 
-// A expressão regular /TodoMVC/ funciona, 
-// pois ela verifica se a string contém 'TodoMVC', 
+// A expressão regular /TodoMVC/ funciona,
+// pois ela verifica se a string contém 'TodoMVC',
 // mas a verificação exata falha.
 
 // Error: expect(page).toHaveTitle(expected) failed
