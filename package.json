@@ -3,13 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "check": "tsc --noEmit",
+    "lint": "eslint ."
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
-    "@types/node": "^26.6.4"
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^26.6.4",
+    "eslint": "^10.13.0",
+    "eslint-plugin-playwright": "^2.12.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.1"
   }
 }
