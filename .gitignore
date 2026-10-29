@@ -10,3 +10,7 @@ node_modules/
 # Variáveis de ambiente (credenciais nunca vão para o Git)
 .env
 .env.*
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
