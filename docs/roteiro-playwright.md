@@ -1616,7 +1616,7 @@ Ou digite `@` e escolha o agente na lista. O revisor:
 
 - [x] Módulo 0: Ambiente
 - [x] Módulo 1: Anatomia e navegação
-- [ ] Módulo 2: Locators
+- [x] Módulo 2: Locators
 - [ ] Módulo 3: Ações
 - [ ] Módulo 4: Assertions web-first
 - [ ] Módulo 5: Filtrar e encadear
