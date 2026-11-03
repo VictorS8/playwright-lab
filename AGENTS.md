@@ -27,9 +27,13 @@ docs/playwright-docker-guia.md  cola de comandos do Docker
 .claude/agents/revisor-playwright.md   agente revisor (versão completa das regras de revisão)
 ```
 
-## Ambiente: os testes rodam no Docker
+## Ambiente
 
-O sistema é o Omarchy (baseado em Arch), que o Playwright não suporta oficialmente. Por isso **os navegadores só existem dentro da imagem Docker oficial**. Rodar `npx playwright test` direto no sistema falha.
+O dono usa duas máquinas. Antes de rodar qualquer comando, confira em qual sistema você está e siga a subseção correspondente.
+
+### Linux (Omarchy): os testes rodam no Docker
+
+O Omarchy é baseado em Arch, que o Playwright não suporta oficialmente. Por isso **os navegadores só existem dentro da imagem Docker oficial**. Rodar `npx playwright test` direto no sistema falha.
 
 - Rodar os testes (sem modo interativo, bom para agentes):
 
@@ -42,6 +46,21 @@ O sistema é o Omarchy (baseado em Arch), que o Playwright não suporta oficialm
 - A versão do `@playwright/test` no `package.json` precisa ser igual à da imagem (`1.63.0`).
 - Arquivos criados pelo container ficam com dono `root`. Se não conseguir editar: `sudo chown -R $USER:$USER .`
 - Não use `--headed`, `--debug` nem `codegen`: o container não tem tela. Para depurar, use o trace e o relatório em `playwright-report/`.
+
+### Windows e macOS: os testes rodam direto no sistema
+
+O Playwright suporta esses sistemas oficialmente, então **não há Docker**: o navegador fica instalado na própria máquina (setup no `README.md`).
+
+- Rodar os testes (sem modo interativo, bom para agentes):
+
+  ```bash
+  npx playwright test --reporter=list
+  ```
+
+- Rodar um site só: acrescente `--project=saucedemo`. Lint e tipos: `npm run lint` e `npm run check`.
+- Mantenha o `--reporter=list`: com o reporter padrão (`html`), uma falha fora do CI abre o relatório e trava o terminal.
+- Não rode `--ui`, `--headed`, `--debug`, `codegen`, `show-report` nem `show-trace`: eles abrem janela ou servidor e nunca terminam sozinhos. São para o dono.
+- Mantenha `@playwright/test` em `1.63.0`, igual à imagem Docker usada no Linux.
 
 ## Convenções de código
 

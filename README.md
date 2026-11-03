@@ -17,11 +17,11 @@ O foco é entender os conceitos aplicados a Web (locators, assertions, Page Obje
 ## Tecnologias
 
 - **[Playwright](https://playwright.dev) 1.63.0** com TypeScript: framework de testes end-to-end. Todos os projetos rodam no Chromium.
-- **[Docker](https://www.docker.com)**: os testes rodam dentro da [imagem oficial do Playwright](https://playwright.dev/docs/docker), que já traz os navegadores. O sistema de desenvolvimento (Arch Linux) não é suportado oficialmente pelo Playwright, então os navegadores existem só dentro do container.
+- **[Docker](https://www.docker.com)** (só no Linux): os testes rodam dentro da [imagem oficial do Playwright](https://playwright.dev/docs/docker), que já traz os navegadores. O Arch Linux não é suportado oficialmente pelo Playwright, então os navegadores existem só dentro do container. No Windows e no macOS, os testes rodam direto no sistema ([veja abaixo](#comandos-no-windows-e-macos)).
 
 > A versão do `@playwright/test` no `package.json` precisa ser igual à da imagem Docker (`1.63.0`).
 
-## Comandos
+## Comandos no Linux (Arch)
 
 ### Primeira vez
 
@@ -106,3 +106,44 @@ docker stop <CONTAINER ID>
 newgrp docker                  # "permission denied" no docker.sock
 sudo chown -R $USER:$USER .    # arquivos criados pelo container ficam com dono root
 ```
+
+## Comandos no Windows e macOS
+
+O Playwright suporta esses sistemas oficialmente, então não há Docker: o navegador fica instalado na própria máquina. Por isso, nada de entrar ou fechar container, nem de `sudo chown`.
+
+### Primeira vez
+
+Instale o [Node.js LTS](https://nodejs.org) e, na raiz do projeto:
+
+```bash
+npm ci                            # instala as versões exatas do package-lock.json
+npx playwright install chromium   # baixa o navegador (os três projetos usam só o Chromium)
+```
+
+> **Windows:** se o `npm` der "a execução de scripts foi desabilitada", rode uma vez no PowerShell `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` ([fonte](https://learn.microsoft.com/powershell/module/microsoft.powershell.core/about/about_execution_policies)).
+
+### Rotina: rodar os testes
+
+Os mesmos comandos de dentro do container, agora direto no terminal:
+
+```bash
+npx playwright test                             # todos os projetos
+npx playwright test --project=todomvc           # só um projeto
+npx playwright test tests/todomvc/m01.spec.ts   # só um arquivo
+npx playwright test --ui                        # UI Mode numa janela, sem --ui-port nem --ui-host
+```
+
+### Comandos que o Docker não permite
+
+O container não tem tela, então estes só funcionam aqui:
+
+```bash
+npx playwright test --headed                             # mostra o navegador durante o teste
+npx playwright test --debug                              # Inspector: executa passo a passo
+npx playwright test tests/todomvc/m01.spec.ts:10 --debug # depura só o teste da linha 10
+npx playwright codegen demo.playwright.dev/todomvc       # grava suas ações e gera o código
+npx playwright show-report                               # abre o relatório HTML
+npx playwright show-trace caminho/do/trace.zip           # abre um trace no Trace Viewer
+```
+
+Também dá para rodar e depurar pela barra lateral do VS Code com a extensão [Playwright Test for VS Code](https://playwright.dev/docs/getting-started-vscode).
