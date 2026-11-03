@@ -4,7 +4,7 @@
 
 Este roteiro tem **6 fases e 24 módulos** (do 0 ao 23). Cada módulo traz objetivo, conceitos em ordem atômica (do mais simples ao mais composto), um exemplo, 4 exercícios graduais e um desafio. Ao fim de cada fase há **questões estilo entrevista**. Não há gabarito: você manda as soluções no chat (ou pede ao agente revisor, apêndice C) e recebe correções e alternativas.
 
-Os testes rodam no **container Docker do Playwright** que você já configurou no Omarchy, contra três sites feitos para treino:
+Os testes rodam no **container Docker do Playwright** que você já configurou no Omarchy (ou direto no sistema, no Windows e no macOS; veja a nota em "Como usar este roteiro"), contra três sites feitos para treino:
 
 | Site | Endereço | O que treina |
 |------|----------|--------------|
@@ -38,6 +38,19 @@ A ordem segue a lógica da própria documentação do Playwright: primeiro escre
 > **Fundamento que vale para o roteiro inteiro:** um bom teste de ponta a ponta **se comporta como um usuário**. Ele encontra os elementos pelo que o usuário enxerga (o papel do elemento e o texto dele), faz ações que o usuário faria e verifica o que o usuário veria. A documentação de boas práticas do Playwright começa exatamente por aqui: testar o comportamento visível, e não detalhes de implementação como classes CSS ou nomes de funções.
 
 > **Sobre os sites de treino:** eles são mantidos por terceiros e podem mudar. Se um locator deste roteiro deixar de funcionar, use o botão **Pick locator** do UI Mode para descobrir o novo. Isso não é um problema do roteiro: é exatamente a habilidade que você está treinando.
+
+> **Windows e macOS:** o roteiro foi escrito para o container do Omarchy, mas quase tudo funciona igual direto no Windows e no macOS. Onde o texto disser "dentro do container" ou `pw-docker`, rode o comando no terminal, na pasta do projeto, e acrescente `--reporter=list` para uma falha não abrir o relatório e travar o terminal. Os módulos que pedem um cuidado extra têm um aviso como este:
+>
+> | Módulos | No Windows e no macOS | Por quê |
+> |---------|-----------------------|---------|
+> | 0 a 14, 16, 18 e 19 | Sem diferença | São testes funcionais: texto, URL e estado não mudam de um sistema para outro |
+> | 15 (arquivos) | Cuidado com caminhos | Barra invertida (`\`) só funciona no Windows |
+> | 17 (depuração) | **Melhor** | `--headed`, `--debug`, `codegen` e `show-report` funcionam sem as limitações do container |
+> | 20 (visuais) | **Cuidado** | O baseline depende do sistema e não bate com o do Linux nem com o do CI |
+> | 21 (CI) | Sem diferença para escrever | O CI roda Linux; reproduzir uma falha dele localmente pede o Docker |
+> | 22 (agentes) | **Melhor** | Os Test Agents precisam de um navegador com janela |
+>
+> Para alternar entre máquinas sem surpresa, mantenha o `@playwright/test` na mesma versão nas duas e use `npm ci` ao trocar: ele instala exatamente as versões do `package-lock.json`.
 
 ---
 
@@ -131,6 +144,8 @@ Leitura atômica das linhas que ainda não apareceram para você:
 | Ver o relatório | abra `~/aprendendo-playwright/playwright-report/index.html` no Omarchy |
 
 O guia `playwright-docker-guia.md` tem a cola completa dos comandos do Docker.
+
+> **Windows e macOS:** pule o passo 1 (não há container) e rode os outros comandos no terminal, na pasta do projeto. O navegador fica instalado na própria máquina (`npx playwright install chromium`). Na tabela acima, o UI Mode vira `npx playwright test --ui`, que abre uma janela, e o relatório abre com `npx playwright show-report`.
 
 **Exercício 0.1:** rode `npx playwright test --list`. O que aparece? (Ainda não há testes, então leia a mensagem.)
 
@@ -1061,6 +1076,8 @@ test('envia um arquivo criado na memória', async ({ page }) => {
 
 O `#file-upload` é CSS. Inputs de arquivo costumam ser escondidos ou sem rótulo; o exercício 4 pede para você procurar uma alternativa.
 
+> **Windows e macOS:** se você passar um arquivo do disco para o `setInputFiles`, nunca escreva o caminho com barra invertida (`'arquivos\\nota.txt'`). Ela só funciona no Windows, e o teste quebra no Linux e no CI. Use barras normais (`'arquivos/nota.txt'`) ou `path.join(__dirname, 'arquivos', 'nota.txt')`, que montam o caminho certo em qualquer sistema. O arquivo criado na memória, como no exemplo, nem passa por esse problema.
+
 **Exercícios:**
 1. Em `/checkboxes`, marque o primeiro, desmarque o segundo e verifique os dois estados.
 2. Em `/download`, baixe o primeiro arquivo da lista e verifique que `suggestedFilename()` não está vazio.
@@ -1169,6 +1186,8 @@ ls playwright-report/
 2. No trace, abra a aba **Network** e encontre uma requisição da página. Qual o status dela?
 3. Ative `screenshot: 'only-on-failure'` no config, quebre um teste e encontre o screenshot no relatório.
 4. Use `console.log` dentro de um teste e encontre a mensagem na aba **Console** do UI Mode.
+
+> **Windows e macOS:** aqui você tem vantagem. A limitação do conceito 7 não existe: `npx playwright test --debug` abre o Inspector para executar passo a passo, `--headed` mostra o navegador e `npx playwright codegen` grava suas ações como código. O relatório abre com `npx playwright show-report` e o trace com `npx playwright show-trace caminho/do/trace.zip`. Experimente o `--debug` em um teste quebrado e compare com o que o trace mostrou.
 
 **Desafio:** escreva um teste que falhe por **strictness** (um locator que encontra dois elementos). Usando só a mensagem de erro e o trace, descubra quais são os dois elementos e corrija o locator sem usar `nth`.
 
@@ -1351,6 +1370,14 @@ test('o formulário de login, sem o logo', async ({ page }) => {
 3. Use `mask` para esconder o badge do carrinho em um screenshot da página de produtos.
 4. Use `page.route` (módulo 16) para bloquear as imagens dos produtos e compare: o screenshot muda? Isso é bom ou ruim para um teste visual?
 
+> **Windows e macOS:** o conceito 7 só vale se você rodar sempre no mesmo container. Direto no Windows, o baseline sai como `login-chromium-win32.png` (no macOS, `-darwin`), e o Linux e o CI procuram `login-chromium-linux.png`. Como as fontes e a suavização das bordas mudam entre sistemas, as imagens nunca ficam iguais pixel a pixel. A solução é escolher **uma** plataforma como fonte da verdade: o Linux, porque é o que o CI usa. No Windows, gere e atualize os baselines pelo Docker Desktop, com a mesma imagem (no PowerShell):
+>
+> ```powershell
+> docker run --rm --ipc=host --init -v "${PWD}:/work" -w /work mcr.microsoft.com/playwright:v1.63.0-noble npx playwright test --project=saucedemo --update-snapshots --reporter=list
+> ```
+>
+> **Exercício extra:** gere o baseline direto no Windows e depois pelo Docker. Compare os dois arquivos lado a lado: a diferença que você enxergar é o motivo deste aviso.
+
 **Desafio:** o `problem_user` mostra imagens erradas nos produtos. Crie um teste visual que passa com o `standard_user` e falha com o `problem_user`. Abra o relatório e encontre a visualização de diferença (diff) entre as imagens.
 
 **Leitura:** [Visual comparisons](https://playwright.dev/docs/test-snapshots), [Screenshots](https://playwright.dev/docs/screenshots), [CI: via containers](https://playwright.dev/docs/ci#via-containers)
@@ -1415,6 +1442,8 @@ Compare com o seu `docker run`: a imagem é a mesma, o `checkout` faz o papel do
 3. Mude o workflow para rodar só os testes `@smoke` em pull requests e a suíte completa em pushes na `main`.
 4. Adicione um gatilho `schedule` (cron) para rodar a suíte completa todo dia às 6h.
 
+> **Windows e macOS:** o workflow se escreve igual em qualquer sistema, mas o CI roda **Linux**. Quando um teste falhar só no CI, reproduza o ambiente dele pelo Docker Desktop: a mesma imagem, com `-e CI=1` para ligar os `retries` e o `forbidOnly` do seu config, e `--cpus=2` para simular uma máquina mais fraca (falhas que dependem de tempo costumam aparecer assim). No Omarchy, o mesmo comando roda sem o Docker Desktop.
+
 **Desafio:** pesquise **sharding** na documentação e divida a suíte em 2 partes rodando em paralelo no GitHub Actions. Explique em um comentário no workflow quando isso vale a pena e quando é exagero.
 
 **Leitura:** [Continuous Integration](https://playwright.dev/docs/ci), [Setting up CI](https://playwright.dev/docs/ci-intro), [Sharding](https://playwright.dev/docs/test-sharding), [GitHub Docs: jobs em container](https://docs.github.com/en/actions/using-jobs/running-jobs-in-a-container)
@@ -1442,6 +1471,8 @@ Compare com o seu `docker run`: a imagem é a mesma, o `checkout` faz o papel do
 2. Peça ao revisor para revisar um teste em que você colocou três erros de propósito (um `await` faltando, um `waitForTimeout` e um locator CSS). Ele encontrou os três?
 3. Leia a página de Test Agents e responda em um comentário: qual a diferença entre o que o **healer** faz e o que um humano faria ao consertar um teste?
 4. (Opcional, se tiver ambiente com janela) Rode `npx playwright init-agents` para a ferramenta que você usa e peça ao planner um plano para o fluxo de checkout do Sauce Demo. Compare com os testes que você escreveu na Fase 2.
+
+> **Windows e macOS:** a limitação do conceito 7 não existe, porque o navegador abre com janela direto na máquina. O exercício 4 deixa de ser opcional: faça-o no Windows.
 
 **Desafio:** escreva, com suas palavras, uma política de uso de IA para a sua suíte: o que pode ser gerado automaticamente, o que precisa de revisão humana e como você garante que um teste gerado está testando a coisa certa (e não só passando).
 
@@ -1540,7 +1571,8 @@ suite-saucedemo/
 | `Target page, context or browser has been closed` | Faltou um `await` e o teste terminou antes da ação |
 | `Duplicate test title` | Dois testes com o mesmo nome no mesmo arquivo (comum em loops, módulo 12) |
 | `A snapshot doesn't exist ... writing actual` | Primeira execução de um teste visual: o baseline foi criado (módulo 20) |
-| `Executable doesn't exist` | A versão do `@playwright/test` não bate com a da imagem Docker |
+| `Executable doesn't exist` | No Omarchy, a versão do `@playwright/test` não bate com a da imagem Docker. No Windows e no macOS, o navegador não foi instalado para essa versão: rode `npx playwright install chromium` |
+| `A snapshot doesn't exist` só no Windows ou no macOS | O baseline foi gerado no Linux e o nome dele inclui o sistema (aviso do módulo 20) |
 
 ## B. Cola rápida
 
@@ -1581,7 +1613,9 @@ npx playwright test --grep @smoke              # pela tag
 npx playwright test --repeat-each=5            # caçar flaky
 npx playwright test --trace on                 # gravar trace
 npx playwright test --update-snapshots         # atualizar baselines
-npx playwright test --ui-port=8080 --ui-host=0.0.0.0
+npx playwright test --ui-port=8080 --ui-host=0.0.0.0   # UI Mode no container
+npx playwright test --ui                       # UI Mode no Windows e no macOS
+npx playwright show-report                     # relatório no Windows e no macOS
 ```
 
 ## C. O agente revisor (`revisor-playwright`)
