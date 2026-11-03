@@ -140,12 +140,12 @@ Leitura atômica das linhas que ainda não apareceram para você:
 | Rodar tudo | `npx playwright test` |
 | Rodar um site só | `npx playwright test --project=todomvc` |
 | Rodar um arquivo | `npx playwright test tests/todomvc/m01-ex1.spec.ts` |
-| UI Mode (abra `http://localhost:8080` no Omarchy) | `npx playwright test --ui-port=8080 --ui-host=0.0.0.0` |
+| UI Mode (abra `http://localhost:8080` no Omarchy) | `npm run test:ui:docker` (atalho para `npx playwright test --ui-port=8080 --ui-host=0.0.0.0`) |
 | Ver o relatório | abra `~/aprendendo-playwright/playwright-report/index.html` no Omarchy |
 
 O guia `playwright-docker-guia.md` tem a cola completa dos comandos do Docker.
 
-> **Windows e macOS:** pule o passo 1 (não há container) e rode os outros comandos no terminal, na pasta do projeto. O navegador fica instalado na própria máquina (`npx playwright install chromium`). Na tabela acima, o UI Mode vira `npx playwright test --ui`, que abre uma janela, e o relatório abre com `npx playwright show-report`.
+> **Windows e macOS:** pule o passo 1 (não há container) e rode os outros comandos no terminal, na pasta do projeto. O navegador fica instalado na própria máquina (`npx playwright install chromium`). Na tabela acima, o UI Mode vira `npx playwright test --ui`, que abre uma janela (ou `npm run test:ui`, que serve no navegador em `http://localhost:8080`), e o relatório abre com `npx playwright show-report`.
 
 **Exercício 0.1:** rode `npx playwright test --list`. O que aparece? (Ainda não há testes, então leia a mensagem.)
 
@@ -1613,8 +1613,9 @@ npx playwright test --grep @smoke              # pela tag
 npx playwright test --repeat-each=5            # caçar flaky
 npx playwright test --trace on                 # gravar trace
 npx playwright test --update-snapshots         # atualizar baselines
-npx playwright test --ui-port=8080 --ui-host=0.0.0.0   # UI Mode no container
-npx playwright test --ui                       # UI Mode no Windows e no macOS
+npm run test:ui:docker                         # UI Mode no container
+npx playwright test --ui                       # UI Mode no Windows e no macOS (janela)
+npm run test:ui                                # UI Mode no Windows e no macOS (navegador)
 npx playwright show-report                     # relatório no Windows e no macOS
 ```
 

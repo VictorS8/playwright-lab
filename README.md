@@ -61,15 +61,21 @@ Dentro do container:
 npx playwright test                          # todos os projetos
 npx playwright test --project=todomvc        # só um projeto
 npx playwright test tests/todomvc/m01.spec.ts   # só um arquivo
-npx playwright test --ui-port=8080 --ui-host=0.0.0.0   # UI Mode
+npm run test:ui:docker                       # UI Mode
 ```
 
-O container não tem tela, então o UI Mode não abre uma janela. Em vez disso, ele sobe um servidor web:
+O container não tem tela, então o UI Mode não abre uma janela. Em vez disso, ele sobe um servidor web. O script `test:ui:docker` do `package.json` é um atalho para `npx playwright test --ui-port=8080 --ui-host=0.0.0.0`:
 
 - `--ui-port=8080` escolhe a porta do servidor.
 - `--ui-host=0.0.0.0` faz o servidor aceitar conexões de fora do container. Sem ele, o servidor só responde dentro do próprio container e o Arch não consegue acessar.
 
-Com o servidor de pé, abra **http://localhost:8080** no navegador do Arch. Para parar, use Ctrl+C no terminal do container. Também dá para combinar com `--project=<nome>`.
+Com o servidor de pé, abra **http://localhost:8080** no navegador do Arch. Para parar, use Ctrl+C no terminal do container. Para repassar outras opções ao Playwright, coloque-as depois de `--`: `npm run test:ui:docker -- --project=saucedemo`.
+
+Para abrir o UI Mode sem entrar no container antes:
+
+```bash
+docker run -it --rm --ipc=host --init -p 127.0.0.1:8080:8080 -v "$PWD":/work -w /work mcr.microsoft.com/playwright:v1.63.0-noble npm run test:ui:docker
+```
 
 O relatório fica em `playwright-report/index.html`. Abra esse arquivo no navegador do sistema.
 
@@ -131,7 +137,10 @@ npx playwright test                             # todos os projetos
 npx playwright test --project=todomvc           # só um projeto
 npx playwright test tests/todomvc/m01.spec.ts   # só um arquivo
 npx playwright test --ui                        # UI Mode numa janela, sem --ui-port nem --ui-host
+npm run test:ui                                 # UI Mode no navegador, em http://localhost:8080
 ```
+
+O `test:ui` é o mesmo atalho do Linux, mas com `--ui-host=127.0.0.1`: sem container no meio, só a própria máquina precisa acessar o servidor. Abra o endereço no navegador ou dentro do VS Code (`Ctrl+Shift+P` → **Simple Browser: Show**). Para repassar opções, use `--`: `npm run test:ui -- --project=saucedemo`.
 
 ### Comandos que o Docker não permite
 

@@ -45,10 +45,12 @@ docker run -it --rm --ipc=host --init -p 127.0.0.1:8080:8080 -v "$PWD":/work -w 
 npx playwright test                                    # rodar todos
 npx playwright test tests/arquivo.spec.ts              # rodar um arquivo
 npx playwright test --project=chromium                 # só Chromium
-npx playwright test --ui-port=8080 --ui-host=0.0.0.0   # UI Mode
+npm run test:ui:docker                                 # UI Mode
+npm run test:ui:docker -- --project=saucedemo          # UI Mode de um site só
 ```
 
 UI Mode no navegador: `http://localhost:8080`
+O `test:ui:docker` é um atalho do `package.json` para `npx playwright test --ui-port=8080 --ui-host=0.0.0.0`.
 Relatório: `~/aprendendo-playwright/playwright-report/index.html`
 
 ## Sair

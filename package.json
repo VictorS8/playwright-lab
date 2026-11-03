@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "check": "tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:ui": "playwright test --ui-port=8080 --ui-host=127.0.0.1",
+    "test:ui:docker": "playwright test --ui-port=8080 --ui-host=0.0.0.0"
   },
   "keywords": [],
   "author": "",
