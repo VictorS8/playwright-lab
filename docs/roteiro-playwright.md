@@ -32,7 +32,7 @@ A ordem segue a lógica da própria documentação do Playwright: primeiro escre
 3. **Um arquivo por exercício**, por exemplo `tests/todomvc/m02-ex1.spec.ts`. Assim você tem o histórico do seu progresso.
 4. **Antes de rodar, tente prever**: o teste vai passar? Se falhar, em qual linha?
 5. **Quebre o teste de propósito** pelo menos uma vez por módulo. Ler a mensagem de erro é metade do aprendizado.
-6. **Peça revisão**: mande o código no chat ou use o agente `revisor-playwright` (apêndice C).
+6. **Peça revisão**: mande o código no chat ou use o agente `revisor-playwright` (apêndice C). Ao pedir para verificar um módulo, a resposta também traz uma etapa de sugestões de títulos, exercício por exercício.
 7. **Responda as questões de entrevista** por escrito, como se explicasse para alguém.
 
 > **Fundamento que vale para o roteiro inteiro:** um bom teste de ponta a ponta **se comporta como um usuário**. Ele encontra os elementos pelo que o usuário enxerga (o papel do elemento e o texto dele), faz ações que o usuário faria e verifica o que o usuário veria. A documentação de boas práticas do Playwright começa exatamente por aqui: testar o comportamento visível, e não detalhes de implementação como classes CSS ou nomes de funções.

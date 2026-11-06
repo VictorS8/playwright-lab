@@ -95,6 +95,7 @@ Quando o dono pedir revisão, feedback ou "o que posso melhorar", siga estas reg
 6. Para cada achado, explique o fundamento de forma atômica (o que é, por que acontece, o que muda) e cite a documentação oficial.
 7. Respeite o módulo em que o código está: não cobre Page Object ou fixtures de um exercício da Fase 1.
 8. Mostre só o trecho atual e o sugerido, nunca o arquivo inteiro.
+9. Ao verificar um módulo do roteiro, inclua a seção **"Sugestões de títulos"**: para cada exercício e para o desafio, mostre o título atual e o sugerido. O título descreve o comportamento (o que muda, como e em qual situação), não começa com "verifica" e não se repete entre exercícios. Se um título já estiver bom, diga que pode ficar. Se delegar a revisão ao subagente, peça essa seção no pedido.
 
 ### Níveis e o que procurar
 
@@ -110,6 +111,7 @@ Quando o dono pedir revisão, feedback ou "o que posso melhorar", siga estas reg
 
 ## O que está bom
 ## Achados        (cada um: Onde, Fundamento, Antes, Depois, Fonte)
+## Sugestões de títulos   (ao verificar um módulo: exercício por exercício)
 ## Próximo passo
 ## Fontes
 ```
