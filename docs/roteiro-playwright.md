@@ -1158,6 +1158,15 @@ Repare que, no primeiro e no último teste, o `expect` sobre `resposta.status()`
 
 # FASE 4: QUALIDADE PROFISSIONAL
 
+> **Codegen a partir daqui (Fases 4 e 5):** até a Fase 3, o `codegen` serve só para comparar com o que você já escreveu, porque escolher o locator, a ação e a assertion é o próprio exercício. A partir desta fase ele está liberado para ganhar tempo, com estes cuidados:
+>
+> 1. **Precisa de janela:** funciona direto no Windows e no macOS, mas não no container do Omarchy.
+> 2. **O código gravado é um rascunho:** ele registra o que você **fez**, não o que precisa ser **verificado**. Quase sempre faltam assertions, e é você quem as acrescenta.
+> 3. **Confira as convenções:** troque o `page.goto` com a URL completa por um caminho relativo ao `baseURL`, troque o `getByText` em elemento clicável por `getByRole` e justifique ou remova `.first()`, `.nth()` e locators CSS.
+> 4. **Ele gera um script linear:** antes de entregar, leve os passos para Page Objects, fixtures e `beforeEach`.
+> 5. **No Sauce Demo, grave com `--test-id-attribute=data-test`.** Sem isso, ele não sugere `getByTestId` com o atributo que o seu config usa.
+> 6. **Passe o resultado pelo revisor**, como qualquer outro teste.
+
 ## Módulo 17: Depuração
 
 **Objetivo:** descobrir **por que** um teste falhou, rápido e com evidências.
@@ -1539,6 +1548,8 @@ suite-saucedemo/
 5. **CI**: workflow no container oficial, com relatório como artefato e tags `@smoke` rodando em pull requests.
 6. **Revisão**: rode o agente revisor na suíte inteira e registre no README as sugestões que você aplicou.
 
+> **Codegen no projeto final:** pode usar para descobrir os locators de uma tela nova ou gravar o rascunho de uma jornada (veja os cuidados no início da Fase 4). Mas nenhum arquivo gravado entra na suíte do jeito que saiu: antes, ele vira Page Object, ganha assertions e passa no lint e no revisor. Se usar `--save-storage` para explorar a sessão, salve o arquivo fora do repositório ou em `playwright/.auth/`, que está no `.gitignore`, porque ele guarda os cookies de login. E lembre da entrevista: você precisa saber explicar cada linha da suíte.
+
 **Conceitos aplicados por módulo:**
 
 | Parte do projeto | Módulos |
@@ -1617,6 +1628,7 @@ npm run test:ui:docker                         # UI Mode no container
 npx playwright test --ui                       # UI Mode no Windows e no macOS (janela)
 npm run test:ui                                # UI Mode no Windows e no macOS (navegador)
 npx playwright show-report                     # relatório no Windows e no macOS
+npx playwright codegen --test-id-attribute=data-test www.saucedemo.com   # rascunho gravado (Fase 4 em diante, Windows e macOS)
 ```
 
 ## C. O agente revisor (`revisor-playwright`)
